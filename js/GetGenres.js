@@ -1,9 +1,7 @@
-// File: /c:/xampp/htdocs/spotify/js/GetGenres.js
-
 const clientId = '570a68bc7060457cad8398d516a0b5e7';
 const clientSecret = '2fc540e6df00481e835262859197876a';
 
-// Function to get Spotify access token
+// ophalen van de access token
 async function getAccessToken() {
     const response = await fetch('https://accounts.spotify.com/api/token', {
         method: 'POST',
@@ -22,7 +20,7 @@ async function getAccessToken() {
     return data.access_token;
 }
 
-// Function to fetch all categories
+// functie om de categorieën op te halen
 async function getCategories(accessToken, locale = 'en_US', limit = 20, offset = 0) {
     const response = await fetch(`https://api.spotify.com/v1/browse/categories?locale=${locale}&limit=${limit}&offset=${offset}`, {
         headers: {
@@ -35,10 +33,10 @@ async function getCategories(accessToken, locale = 'en_US', limit = 20, offset =
     }
 
     const data = await response.json();
-    return data.categories.items; // Return the list of categories
+    return data.categories.items; // lijst van categorieën
 }
 
-// Function to fetch songs for a specific genre
+// Functie om de nummers op te halen met geven genre
 async function getSongsByGenre(accessToken, genre) {
     const response = await fetch(`https://api.spotify.com/v1/recommendations?seed_genres=${genre}&limit=20`, {
         headers: {
@@ -51,10 +49,10 @@ async function getSongsByGenre(accessToken, genre) {
     }
 
     const data = await response.json();
-    return data.tracks; // Return the list of tracks
+    return data.tracks; // lijst van nummers
 }
 
-// Mapping of category IDs or names to valid genre names
+// Mapping van categorieën naar genres
 const categoryToGenreMap = {
     "pop": "pop",
     "rock": "rock",
@@ -76,7 +74,7 @@ const categoryToGenreMap = {
     "afro": "afrobeat"
 };
 
-// List of valid genre seeds
+// Lijst van geldige genre seeds
 const validGenreSeeds = [
     "pop", "rap", "rock", "urbano latino", "hip hop", "trap latino",
     "reggaeton", "dance pop", "pop rap", "modern rock", "pov: indie",
@@ -84,7 +82,7 @@ const validGenreSeeds = [
     "trap", "alternative metal", "k-pop", "r&b"
 ];
 
-// Function to display categories dynamically in the HTML
+// Funcite om de categorieën weer te geven in de HTML
 async function displayCategories() {
     try {
         const accessToken = await getAccessToken();
@@ -94,20 +92,20 @@ async function displayCategories() {
         console.log('Categories:', categories);
 
         const genreContainer = document.getElementById('genre-list');
-        genreContainer.innerHTML = ''; // Clear any existing content
+        genreContainer.innerHTML = ''; // leeg de container voordat je nieuwe categorieën toevoegt
 
-        // Create a row container for the cards
+        // maak een header voor de categorieën
         const row = document.createElement('div');
-        row.className = 'row g-4'; // Bootstrap row with gutters
+        row.className = 'row g-4';
 
         for (const category of categories) {
             console.log(`Displaying category: ${category.id} (${category.name})`);
 
-            // Create a column for the card
+            // maak een nieuwe kolom voor de categorie
             const col = document.createElement('div');
-            col.className = 'col-md-4'; // 3 cards per row on medium screens
+            col.className = 'col-md-4'; // 3 karten per rij op een groot scherm
 
-            // Create a card for the category
+            // maakt de kaart voor de categorie
             col.innerHTML = `
                 <div class="card shadow-sm h-100">
                     <img src="${category.icons[0]?.url || 'https://via.placeholder.com/150'}" class="card-img-top" alt="${category.name}">
@@ -118,14 +116,14 @@ async function displayCategories() {
                 </div>
             `;
 
-            // Append the column to the row
+            // voeg de kolom toe aan de rij
             row.appendChild(col);
         }
 
-        // Append the row to the container
+        // voeg de rij toe aan de container
         genreContainer.appendChild(row);
 
-        // Add event listeners to all "Explore" buttons
+        // maakt de knoppen voor de categorieën klikbaar
         const exploreButtons = document.querySelectorAll('.explore-btn');
         exploreButtons.forEach(button => {
             button.addEventListener('click', async (event) => {
@@ -152,10 +150,10 @@ async function displayCategories() {
     }
 }
 
-// Function to display songs dynamically in the HTML
+// Funcie om de nummers weer te geven in de HTML
 function displaySongs(songs, genre) {
     const genreContainer = document.getElementById('genre-list');
-    genreContainer.innerHTML = ''; // Clear the existing content
+    genreContainer.innerHTML = '';
 
     const header = document.createElement('h2');
     header.className = 'text-center mb-4';
@@ -186,5 +184,4 @@ function displaySongs(songs, genre) {
     genreContainer.appendChild(row);
 }
 
-// Call the function to fetch and display categories
 displayCategories();

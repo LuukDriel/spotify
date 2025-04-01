@@ -1,13 +1,13 @@
 const clientId = '570a68bc7060457cad8398d516a0b5e7';
 const clientSecret = '2fc540e6df00481e835262859197876a';
 
-// Function to get Spotify access token
+// access token ophalen
 async function getAccessToken() {
     const response = await fetch('https://accounts.spotify.com/api/token', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': 'Basic ' + btoa(clientId + ':' + clientSecret), // Use the correct variable names
+            'Authorization': 'Basic ' + btoa(clientId + ':' + clientSecret),
         },
         body: 'grant_type=client_credentials',
     });
@@ -19,8 +19,7 @@ async function getAccessToken() {
     const data = await response.json();
     return data.access_token;
 }
-
-// Function to fetch top global songs and display them dynamically
+// functie om de nummers op te halen
 async function getTopSongsGlobal() {
     try {
         const accessToken = await getAccessToken();
@@ -39,13 +38,13 @@ async function getTopSongsGlobal() {
         const data = await response.json();
         const albums = data.albums.items;
 
-        // Display the songs in the HTML
+        // laat de albums zien in een html
         const songList = document.getElementById('song-list');
-        songList.innerHTML = ''; // Clear any existing content
+        songList.innerHTML = '';
 
         albums.forEach(album => {
             const card = document.createElement('div');
-            card.className = 'col-md-4'; // Bootstrap column class
+            card.className = 'col-md-4';
             card.innerHTML = `
                 <div class="card mb-4 shadow-sm">
                     <img src="${album.images[0]?.url || 'https://via.placeholder.com/150'}" class="card-img-top" alt="${album.name}">
@@ -63,5 +62,4 @@ async function getTopSongsGlobal() {
     }
 }
 
-// Call the function to fetch and display top songs
 getTopSongsGlobal();
